@@ -1,0 +1,9 @@
+[package]
+name = "output_args"
+version = "0.1.0"
+authors = ["Chris MacNaughton <chmacnaughton@gmail.com>"]
+
+[dependencies]
+clap = "*"
+yaml-rust = "*"
+log = "*"
