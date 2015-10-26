@@ -64,17 +64,17 @@ impl Args {
 
 #[derive(Clone,Debug)]
 pub struct Influx {
-    user: String,
-    password: String,
-    host: String,
-    port: String
+    pub user: String,
+    pub password: String,
+    pub host: String,
+    pub port: String
 }
 
 #[derive(Clone,Debug)]
 pub struct Carbon {
-    host: String,
-    port: String,
-    root_key: String,
+    pub host: String,
+    pub port: String,
+    pub root_key: String,
 }
 
 pub fn get_args() -> Args {
