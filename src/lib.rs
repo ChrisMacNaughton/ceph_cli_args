@@ -181,10 +181,9 @@ fn get_cli_args() -> CliArgs {
     ).get_matches();
 
     let log_level = match matches.occurrences_of("debug") {
-        0 => log::LogLevel::Error,
-        1 => log::LogLevel::Warn,
-        2 => log::LogLevel::Info,
-        3 | _ => log::LogLevel::Debug,
+        0 => log::LogLevel::Info,
+        1 => log::LogLevel::Debug,
+        2 | _ => log::LogLevel::Trace,
     };
     CliArgs {
         log_level: log_level,
