@@ -57,7 +57,18 @@ impl Args {
             stdout: None,
             outputs: Vec::new(),
             config_path: "".to_string(),
-            log_level: LogLevel::Info
+            log_level: LogLevel::Info,
+        }
+    }
+    fn with_log_level(log_level: LogLevel) -> Args {
+        Args {
+            carbon: None,
+            influx: None,
+            elasticsearch: None,
+            stdout: None,
+            outputs: Vec::new(),
+            config_path: "".to_string(),
+            log_level: log_level,
         }
     }
 }
@@ -99,7 +110,9 @@ fn parse(args_string: &str, log_level: LogLevel) -> Result<Args, String> {
             return Err("cannot load data from yaml".to_string());
         }
     };
-
+    if docs.len() == 0 {
+        return Ok(Args::with_log_level(log_level));
+    }
     let doc = &docs[0];
 
     let elasticsearch = match doc["elasticsearch"].as_str() {
@@ -181,9 +194,10 @@ fn get_cli_args() -> CliArgs {
     ).get_matches();
 
     let log_level = match matches.occurrences_of("debug") {
-        0 => log::LogLevel::Info,
-        1 => log::LogLevel::Debug,
-        2 | _ => log::LogLevel::Trace,
+        0 => log::LogLevel::Warn,
+        1 => log::LogLevel::Info,
+        2 => log::LogLevel::Debug,
+        3 | _ => log::LogLevel::Trace,
     };
     CliArgs {
         log_level: log_level,
