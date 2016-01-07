@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate clap;
 #[macro_use]
 extern crate log;
@@ -9,6 +8,8 @@ use yaml_rust::YamlLoader;
 use std::fs::File;
 use std::io::prelude::*;
 use log::LogLevel;
+
+use clap::{Arg, App};
 
 #[cfg(test)]
 mod tests{
@@ -88,8 +89,8 @@ pub struct Carbon {
     pub root_key: String,
 }
 
-pub fn get_args() -> Args {
-    let cli_args = get_cli_args();
+pub fn get_args(app: &str, version: &str) -> Args {
+    let cli_args = get_cli_args(app, version);
     let yaml_text = match read_from_file(cli_args.config_file.as_ref()) {
         Ok(yaml) => yaml,
         Err(_) => "".to_string(),
@@ -187,11 +188,24 @@ fn read_from_file(config_path: &str) -> Result<String, String> {
     Ok(s.to_string())
 }
 
-fn get_cli_args() -> CliArgs {
-    let matches = clap_app!(args =>
-        (@arg CONFIG: -c --config +takes_value "Path to config file")
-        (@arg debug: -d ... "Sets the level of debugging information")
-    ).get_matches();
+fn get_cli_args(app: &str, version: &str) -> CliArgs {
+    let matches = App::new(app)
+        .version(&version[..])
+        .arg(Arg::with_name("debug")
+                           .short("d")
+                           .multiple(true)
+                           .help("Sets the level of debugging information"))
+        .arg(Arg::with_name("CONFIG")
+                           .short("c")
+                           .long("config")
+                           .help("Sets a custom config file")
+                           .takes_value(true))
+        .get_matches();
+    // let matches = clap_app!(args =>
+    //     (version: &version[..])
+    //     (@arg CONFIG: -c --config +takes_value "Path to config file")
+    //     (@arg debug: -d ... "Sets the level of debugging information")
+    // ).get_matches();
 
     let log_level = match matches.occurrences_of("debug") {
         0 => log::LogLevel::Warn,
